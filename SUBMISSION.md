@@ -38,10 +38,12 @@ partner receives authority to spend or inflate another merchant's balance.
 
 - 20 Rust tests, including a real-SBF LiteSVM end-to-end flow.
 - 7 CLI tests, including offline encoding of all seven public instructions.
-- Strict Clippy, Rust formatting, TypeScript build, and zero-vulnerability
-  production npm audit.
+- 4 browser tests, including Rust-fixture parity, liability isolation, caps,
+  tier progression, and PDA parity with the CLI.
+- Strict Clippy, Rust formatting, both TypeScript builds, and zero-vulnerability
+  production npm audits for both public clients.
 - Clean-room public CI:
-  <https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29972255775>
+  <https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29977683271>
 - The CI SBF job rebuilds the program, runs the complete real-bytecode LiteSVM
   flow, verifies the versioned IDL and exact SHA-256 digest, and publishes the
   SBF/IDL bundle as a downloadable artifact.
@@ -54,8 +56,9 @@ partner receives authority to spend or inflate another merchant's balance.
 The browser demo is a zero-install, wallet-free walkthrough of receipt accrual,
 portable tier progression, and issuer-isolated redemption. Its read-only
 Devnet inspector derives the same public PDAs as the CLI and queries the
-canonical RPC without requesting signing permission. The production URL will
-be inserted after deployment.
+canonical RPC without requesting signing permission:
+
+<https://spoconymacius3879254-ctrl.github.io/coalition-passport/>
 
 The versioned Anchor IDL and compiled CLI remain in `clients/passport-cli`.
 The CLI supports wallet-free PDA derivation, combined tier/status inspection,

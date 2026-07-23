@@ -8,9 +8,10 @@ speculative token or forcing one merchant to assume another merchant's
 liability.
 
 It is being built for Superteam Poland's On-Chain Loyalty Rewards System
-Challenge. The Rust/Anchor program, Token-2022 integration, real-SBF tests, and
-TypeScript CLI are implemented locally. Devnet deployment is pending test-SOL
-faucet funding; no mainnet deployment or real funds are involved.
+Challenge. The Rust/Anchor program, Token-2022 integration, real-SBF tests,
+TypeScript CLI, and public wallet-free browser demo are implemented. Devnet
+program deployment is pending test-SOL faucet funding; no mainnet deployment
+or real funds are involved.
 
 ## What is new
 
@@ -133,8 +134,9 @@ through the architecture:
 
 The browser never connects a wallet, reads a keypair, or creates a transaction.
 Its model tests include the Rust demo fixture and its PDA test matches the
-independently tested Anchor CLI. The production site URL will be added here
-after its first deployment.
+independently tested Anchor CLI.
+
+**[Launch the public browser demo](https://spoconymacius3879254-ctrl.github.io/coalition-passport/)**
 
 ```sh
 npm ci
@@ -172,10 +174,13 @@ Current evidence:
 - `target/deploy/coalition_passport.so` is 313,064 bytes, SHA-256
   `59988c56c38586425af52d4b78c0914b7d3f2e0f0a48d3fdb4b6524554d4fb6f`.
 
-The [public clean-room CI run](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29972255775)
-rebuilds the SBF program, executes the real bytecode through LiteSVM, verifies
+The [current public clean-room CI run](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29977683271)
+rebuilds the SBF program, executes the real bytecode through LiteSVM, tests and
+builds both public clients, verifies both production dependency audits, checks
 the versioned IDL and exact program digest, and publishes the SBF/IDL bundle as
-a downloadable workflow artifact.
+a downloadable workflow artifact. The separate [Pages deployment
+run](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29977683274)
+builds and publishes the browser client from the same repository.
 
 The host CPU lacks AVX, so the legacy validator binary cannot start. The
 transaction suite instead uses Anchor's LiteSVM path and executes the real SBF
