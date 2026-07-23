@@ -1,6 +1,7 @@
 target/
 .anchor/
 test-ledger/
+evidence/runtime/
 .env
 .env.*
 *-keypair.json

@@ -163,6 +163,20 @@ Deployment and transaction links will be added after the gitignored Devnet-only
 deployer receives faucet SOL. This section intentionally does not present local
 simulation as public deployment evidence.
 
+The deployment runner defaults to a non-signing preflight. It verifies the
+Devnet genesis hash, exact program/deployer identities, signer permissions,
+SBF digest, CLI build, tests, audit, and RPC compatibility:
+
+```sh
+scripts/devnet-demo.sh --check
+```
+
+Only `scripts/devnet-demo.sh --execute` signs or submits. It first requires at
+least 2.3 Devnet SOL, deploys with the explicit gitignored signer, funds the two
+throwaway demo identities, runs the complete loyalty flow, and writes public
+signatures plus final decoded state to gitignored
+`evidence/runtime/complete.json`.
+
 ## Tradeoffs and trust boundaries
 
 - The chain cannot prove a physical sale. Registered merchants are trusted

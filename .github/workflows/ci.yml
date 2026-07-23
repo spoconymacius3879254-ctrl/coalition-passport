@@ -41,6 +41,10 @@ jobs:
           npm run build
           npm test
           npm audit --omit=dev
+      - name: Devnet runner safety contracts
+        run: |
+          bash -n scripts/devnet-demo.sh
+          python3 -m unittest -v tests.test_devnet_script
 
   sbf-acceptance:
     runs-on: ubuntu-latest
