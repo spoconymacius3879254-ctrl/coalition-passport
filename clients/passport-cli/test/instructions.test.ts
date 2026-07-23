@@ -16,7 +16,7 @@ type MethodBuilder = {
 };
 
 describe("IDL instruction builders", () => {
-  it("encodes every CLI transaction instruction without RPC or secret keys", async () => {
+  it("encodes every public transaction instruction without RPC or secret keys", async () => {
     const program = await programForReadOnlyUse("http://127.0.0.1:9");
     const methods = program.methods as Record<string, (...args: unknown[]) => MethodBuilder>;
     const method = (name: string, ...args: unknown[]): MethodBuilder => {
@@ -34,6 +34,8 @@ describe("IDL instruction builders", () => {
     const instructions = await Promise.all([
       method("initializeCoalition", new BN("50"), [new BN("10"), new BN("25")])
         .accounts({ authority, coalition, systemProgram: SYSTEM_PROGRAM_ID }).instruction(),
+      method("pauseCoalition").accounts({ authority, coalition }).instruction(),
+      method("unpauseCoalition").accounts({ authority, coalition }).instruction(),
       method("registerMerchant", 1_000, new BN("500"))
         .accounts({ authority, coalition, merchantAuthority, merchant, systemProgram: SYSTEM_PROGRAM_ID }).instruction(),
       method("createPassport").accounts({
@@ -45,7 +47,7 @@ describe("IDL instruction builders", () => {
       method("redeem", new BN("10")).accounts({ customer, coalition, passport, merchant, balance }).instruction(),
     ]);
 
-    expect(instructions).toHaveLength(5);
+    expect(instructions).toHaveLength(7);
     for (const instruction of instructions) expect(instruction.data.length).toBeGreaterThanOrEqual(8);
   });
 });

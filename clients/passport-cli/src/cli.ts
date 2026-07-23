@@ -7,12 +7,14 @@ import {
   PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_2022_PROGRAM_ID,
+  accountClientName,
   deriveBalance,
   deriveAddresses,
   deriveCoalition,
   deriveMerchant,
   derivePassport,
   deriveToken2022Ata,
+  integerValue,
   jsonSafe,
   loadExplicitSigner,
   parsePublicKey,
@@ -25,6 +27,7 @@ import {
   receiptCommitment,
   rpcUrl,
   sendDevnetInstruction,
+  tierLevelFor,
 } from "./core.js";
 
 type Flags = Record<string, string>;
@@ -36,7 +39,9 @@ function usage(): never {
   passport-cli derive passport --authority PUBKEY --customer PUBKEY
   passport-cli derive balance --authority PUBKEY --merchant-authority PUBKEY --customer PUBKEY
   passport-cli show <coalition|merchant|passport|balance> --address PUBKEY [--rpc URL] [--idl PATH]
+  passport-cli status --authority PUBKEY --customer PUBKEY [--merchant-authority PUBKEY] [--rpc URL]
   passport-cli build initialize-coalition --signer PUBKEY --max-receipt-units U64 --tiers N,N,... [--idl PATH]
+  passport-cli build <pause-coalition|unpause-coalition> --signer PUBKEY [--idl PATH]
   passport-cli build register-merchant --signer PUBKEY --merchant-authority PUBKEY --earn-bps U16 --daily-cap U64 [--idl PATH]
   passport-cli build create-passport --signer PUBKEY --authority PUBKEY --passport-mint PUBKEY [--idl PATH]
   passport-cli build record-receipt --signer PUBKEY --authority PUBKEY --customer PUBKEY --nonce U64 --amount U64 (--receipt-commitment HEX | --receipt-reference TEXT --receipt-salt TEXT) [--idl PATH]
@@ -96,7 +101,66 @@ function receiptHash(flags: Flags, merchant: import("@solana/web3.js").PublicKey
 async function main(): Promise<void> {
   const { positionals, flags } = parse(process.argv.slice(2));
   const [group, action] = positionals;
-  if (group === undefined || action === undefined) usage();
+  if (group === undefined) usage();
+
+  if (group === "status") {
+    const authority = parsePublicKey(required(flags, "authority"), "authority");
+    const customer = parsePublicKey(required(flags, "customer"), "customer");
+    const coalition = deriveCoalition(authority);
+    const passport = derivePassport(coalition, customer);
+    const program = await programForReadOnlyUse(rpcUrl(flags.rpc), flags.idl ?? DEFAULT_IDL_PATH);
+    const accountClients = program.account as Record<string, { fetch: (key: PublicKey) => Promise<Record<string, unknown>> }>;
+    const coalitionClient = accountClients.coalition;
+    const passportClient = accountClients.passport;
+    if (coalitionClient === undefined || passportClient === undefined) throw new Error("IDL is missing Coalition or Passport account clients");
+    const [coalitionState, passportState] = await Promise.all([
+      coalitionClient.fetch(coalition),
+      passportClient.fetch(passport),
+    ]);
+    const tierCountValue = coalitionState.tierCount;
+    if (typeof tierCountValue !== "number" || !Number.isInteger(tierCountValue) || tierCountValue < 1) {
+      throw new Error("coalition tier count is invalid");
+    }
+    if (!Array.isArray(coalitionState.tierThresholds)) throw new Error("coalition tier thresholds are invalid");
+    const thresholds = coalitionState.tierThresholds
+      .slice(0, tierCountValue)
+      .map((value, index) => integerValue(value, `tier threshold ${index}`));
+    const streakPoints = integerValue(passportState.streakPoints, "Passport streak points");
+    const level = tierLevelFor(streakPoints, thresholds);
+    const result: Record<string, unknown> = {
+      programId: PROGRAM_ID,
+      coalition,
+      passport,
+      customer,
+      paused: coalitionState.paused,
+      totalVisits: passportState.totalVisits,
+      streakPoints,
+      tier: {
+        level,
+        reachedThresholds: thresholds.slice(0, level),
+        nextThreshold: thresholds[level] ?? null,
+      },
+    };
+    const merchantAuthorityValue = flags["merchant-authority"];
+    if (merchantAuthorityValue !== undefined) {
+      const merchantAuthority = parsePublicKey(merchantAuthorityValue, "merchant authority");
+      const merchant = deriveMerchant(coalition, merchantAuthority);
+      const balance = deriveBalance(passport, merchant);
+      const balanceClient = accountClients.merchantBalance;
+      if (balanceClient === undefined) throw new Error("IDL is missing MerchantBalance account client");
+      const balanceState = await balanceClient.fetch(balance);
+      const earned = integerValue(balanceState.earnedUnits, "earned units");
+      const redeemed = integerValue(balanceState.redeemedUnits, "redeemed units");
+      if (redeemed > earned) throw new Error("decoded merchant balance is corrupt");
+      result.merchant = merchant;
+      result.balance = balance;
+      result.credit = { earned, redeemed, available: earned - redeemed };
+    }
+    output(result);
+    return;
+  }
+
+  if (action === undefined) usage();
 
   if (group === "derive") {
     const authority = parsePublicKey(required(flags, "authority"), "authority");
@@ -115,8 +179,8 @@ async function main(): Promise<void> {
   if (group === "show") {
     const address = parsePublicKey(required(flags, "address"), "address");
     const program = await programForReadOnlyUse(rpcUrl(flags.rpc), flags.idl ?? DEFAULT_IDL_PATH);
-    const account = (program.account as Record<string, { fetch: (key: typeof address) => Promise<unknown> }>)[action];
-    if (account === undefined) throw new Error(`unknown account type: ${action}`);
+    const account = (program.account as Record<string, { fetch: (key: typeof address) => Promise<unknown> }>)[accountClientName(action)];
+    if (account === undefined) throw new Error(`IDL does not define account type ${action}`);
     output(await account.fetch(address));
     return;
   }
@@ -153,6 +217,15 @@ async function main(): Promise<void> {
       new BN(parseUnsigned(required(flags, "max-receipt-units"), "max receipt units").toString()),
       parseTierThresholds(required(flags, "tiers")).map((tier) => new BN(tier.toString())),
     ).accounts({ authority, coalition, systemProgram: SYSTEM_PROGRAM_ID }).instruction();
+    await finish(instruction, [authority], [primaryKeypair!]);
+    return;
+  }
+
+  if (action === "pause-coalition" || action === "unpause-coalition") {
+    const authority = signer;
+    const coalition = deriveCoalition(authority);
+    const methodName = action === "pause-coalition" ? "pauseCoalition" : "unpauseCoalition";
+    const instruction = await method(methodName).accounts({ authority, coalition }).instruction();
     await finish(instruction, [authority], [primaryKeypair!]);
     return;
   }

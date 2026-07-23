@@ -1,5 +1,7 @@
 # Coalition Passport
 
+[![CI](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/workflows/ci.yml/badge.svg)](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/workflows/ci.yml)
+
 Coalition Passport is a Solana loyalty primitive that makes customer reputation
 portable across local businesses without turning merchant points into a
 speculative token or forcing one merchant to assume another merchant's
@@ -17,8 +19,8 @@ merchant records authenticated receipt commitments into a separate balance PDA:
 
 - merchant-local credits can be redeemed only with their issuer;
 - bounded streak points aggregate into a coalition-wide reputation tier; and
-- another dApp can read the Passport tier to gate a perk without receiving any
-  authority over balances.
+- another dApp can combine the Passport streak with Coalition thresholds to
+  derive a tier and gate a perk without receiving authority over balances.
 
 This separates **portable reputation** from **local financial liability**. A
 coffee shop can recognize a trusted neighbourhood regular while never accepting
@@ -47,7 +49,7 @@ merchant signer ── receipt ─────────┼──> MerchantBal
                                     └──> streak + tier (portable reputation)
 
 customer signer ── redeem ─────────────> decrements one MerchantBalance
-partner dApp ── read only ─────────────> gates perk from Passport tier
+partner dApp ── reads Passport + Coalition ──> derives tier and gates perk
 ```
 
 | Account | PDA seeds | Role |
@@ -57,9 +59,11 @@ partner dApp ── read only ─────────────> gates per
 | `Passport` | `passport`, coalition, customer | Customer identity keys, visits, streak, tier inputs |
 | `MerchantBalance` | `balance`, Passport, Merchant | Isolated earned/redeemed units, daily cap state, nonce |
 
-The public `Passport` and `MerchantBalance` layouts are the composability API.
-A partner program can constrain a passed Passport PDA to this program and gate
-its own instruction on decoded tier state without gaining write authority.
+The public `Coalition`, `Passport`, and `MerchantBalance` layouts are the
+composability API. A partner program can constrain the Coalition and Passport
+PDAs to this program, derive the tier from `streak_points` and the active
+threshold schedule, and gate its own instruction without gaining write
+authority. The CLI `status` command demonstrates that exact consumer logic.
 
 ## On-chain flow and guarantees
 
@@ -84,6 +88,8 @@ It has three explicit modes:
 
 - `derive`: calculate public PDAs locally;
 - `show`: fetch and decode one public account; and
+- `status`: combine Coalition and Passport state into a readable tier/credit
+  view; and
 - `build` / `send`: inspect an unsigned instruction or explicitly sign it.
 
 `build` reads no key file and contacts no RPC. `send` has no default wallet,
@@ -98,15 +104,16 @@ npm ci
 npm run build
 npm test
 npm run audit
+npm run check-devnet
 
 npm run cli -- derive coalition --authority <AUTHORITY_PUBKEY>
 npm run cli -- show passport --address <PASSPORT_PDA>
+npm run cli -- status --authority <AUTHORITY_PUBKEY> --customer <CUSTOMER_PUBKEY>
 npm run cli -- build record-receipt \
   --signer <MERCHANT_PUBKEY> \
   --authority <COALITION_AUTHORITY_PUBKEY> \
   --customer <CUSTOMER_PUBKEY> \
-  --nonce 1 --amount 120 \
-  --receipt-reference order-001 --receipt-salt '<random-private-salt>'
+  --nonce 1 --amount 120 --receipt-commitment <64_HEX_CHARACTERS>
 ```
 
 See [`clients/passport-cli/README.md`](clients/passport-cli/README.md) for send
@@ -131,8 +138,9 @@ Current evidence:
 
 - 20 Rust tests pass: 8 Anchor unit, 1 real-SBF LiteSVM acceptance flow, 10
   deterministic core, and 1 JSON fixture integration test;
-- 6 CLI tests cover validation, privacy commitments, PDA isolation, and offline
-  encoding of all five on-chain instruction builders;
+- 7 CLI tests cover validation, readable account/tier decoding, privacy
+  commitments, PDA isolation, and offline encoding of all seven on-chain
+  instruction builders;
 - strict Clippy, formatting, Anchor SBF build, TypeScript build, and production
   dependency audit pass; and
 - `target/deploy/coalition_passport.so` is 313,064 bytes, SHA-256

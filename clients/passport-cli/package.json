@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsc",
     "cli": "node dist/src/cli.js",
+    "check-devnet": "node dist/src/check-devnet.js",
     "test": "vitest run",
     "audit": "npm audit --omit=dev"
   },

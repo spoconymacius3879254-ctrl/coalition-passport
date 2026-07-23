@@ -11,7 +11,7 @@ import {
   clusterApiUrl,
   sendAndConfirmTransaction,
 } from "@solana/web3.js";
-import { Idl, Program } from "@anchor-lang/core";
+import { BN, Idl, Program } from "@anchor-lang/core";
 
 export const PROGRAM_ID = new PublicKey("2A2227YnW1PEr6FrMLxZrjm8B3P3fHWQjjqM8tDNhxg6");
 export const TOKEN_2022_PROGRAM_ID = new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
@@ -133,6 +133,28 @@ export function rpcUrl(value?: string): string {
   return value ?? clusterApiUrl("devnet");
 }
 
+export function accountClientName(value: string): "coalition" | "merchant" | "merchantBalance" | "passport" {
+  if (value === "balance") return "merchantBalance";
+  if (value === "coalition" || value === "merchant" || value === "passport") return value;
+  throw new Error(`unknown account type: ${value}`);
+}
+
+export function integerValue(value: unknown, label: string): bigint {
+  if (typeof value === "bigint") return value;
+  if (BN.isBN(value)) return BigInt((value as BN).toString(10));
+  if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) return BigInt(value);
+  throw new Error(`${label} is not a decoded unsigned integer`);
+}
+
+export function tierLevelFor(streakPoints: bigint, thresholds: bigint[]): number {
+  let level = 0;
+  for (const threshold of thresholds) {
+    if (streakPoints < threshold) break;
+    level += 1;
+  }
+  return level;
+}
+
 export async function loadIdl(path = DEFAULT_IDL_PATH): Promise<Idl> {
   const parsed: unknown = JSON.parse(await readFile(path, "utf8"));
   if (typeof parsed !== "object" || parsed === null || !("address" in parsed)) throw new Error("IDL is not a valid Anchor IDL");
@@ -203,6 +225,7 @@ export function printableInstruction(instruction: TransactionInstruction, requir
 
 export function jsonSafe(value: unknown): unknown {
   if (typeof value === "bigint") return value.toString();
+  if (BN.isBN(value)) return (value as BN).toString(10);
   if (value instanceof PublicKey) return value.toBase58();
   if (Array.isArray(value)) return value.map(jsonSafe);
   if (value !== null && typeof value === "object") {

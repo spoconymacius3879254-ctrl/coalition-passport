@@ -1,10 +1,24 @@
 import { PublicKey } from "@solana/web3.js";
 import { describe, expect, it } from "vitest";
-import { DEVNET_GENESIS_HASH, deriveAddresses, deriveBalance, deriveCoalition, deriveMerchant, derivePassport, parseReceiptCommitment, parseTierThresholds, parseUnsigned, receiptCommitment } from "../src/core.js";
+import { BN } from "@anchor-lang/core";
+import { DEVNET_GENESIS_HASH, accountClientName, deriveAddresses, deriveBalance, deriveCoalition, deriveMerchant, derivePassport, integerValue, jsonSafe, parseReceiptCommitment, parseTierThresholds, parseUnsigned, receiptCommitment, tierLevelFor } from "../src/core.js";
 
 describe("input parsing", () => {
   it("pins the complete Solana Devnet genesis hash", () => {
     expect(DEVNET_GENESIS_HASH).toBe("EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG");
+  });
+
+  it("maps friendly account names and prints decoded u64 values as decimals", () => {
+    expect(accountClientName("balance")).toBe("merchantBalance");
+    expect(accountClientName("passport")).toBe("passport");
+    expect(() => accountClientName("unknown")).toThrow();
+    expect(jsonSafe({ earnedUnits: new BN("18446744073709551615") })).toEqual({
+      earnedUnits: "18446744073709551615",
+    });
+    expect(integerValue(new BN("700"), "streak")).toBe(700n);
+    expect(tierLevelFor(99n, [100n, 300n, 700n])).toBe(0);
+    expect(tierLevelFor(300n, [100n, 300n, 700n])).toBe(2);
+    expect(tierLevelFor(999n, [100n, 300n, 700n])).toBe(3);
   });
 
   it("rejects signed, fractional, and overflowing u64 values", () => {

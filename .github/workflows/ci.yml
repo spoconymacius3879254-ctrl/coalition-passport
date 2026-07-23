@@ -41,3 +41,37 @@ jobs:
           npm run build
           npm test
           npm audit --omit=dev
+
+  sbf-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install pinned Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v3.1.10/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - name: Install pinned Anchor release binary
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSfL \
+            https://github.com/solana-foundation/anchor/releases/download/v1.0.2/anchor-1.0.2-x86_64-unknown-linux-gnu \
+            -o "$HOME/.local/bin/anchor"
+          chmod 0755 "$HOME/.local/bin/anchor"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build real SBF artifact and generated IDL
+        run: anchor build --ignore-keys
+      - name: Run complete workspace including real-SBF LiteSVM flow
+        run: cargo test --workspace
+      - name: Verify public IDL and artifact digest
+        run: |
+          cmp target/idl/coalition_passport.json clients/passport-cli/idl/coalition_passport.json
+          echo "59988c56c38586425af52d4b78c0914b7d3f2e0f0a48d3fdb4b6524554d4fb6f  target/deploy/coalition_passport.so" | sha256sum --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coalition-passport-sbf
+          path: |
+            target/deploy/coalition_passport.so
+            target/idl/coalition_passport.json
