@@ -146,6 +146,11 @@ Current evidence:
 - `target/deploy/coalition_passport.so` is 313,064 bytes, SHA-256
   `59988c56c38586425af52d4b78c0914b7d3f2e0f0a48d3fdb4b6524554d4fb6f`.
 
+The [public clean-room CI run](https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29972255775)
+rebuilds the SBF program, executes the real bytecode through LiteSVM, verifies
+the versioned IDL and exact program digest, and publishes the SBF/IDL bundle as
+a downloadable workflow artifact.
+
 The host CPU lacks AVX, so the legacy validator binary cannot start. The
 transaction suite instead uses Anchor's LiteSVM path and executes the real SBF
 artifact—not a mocked instruction implementation.

@@ -41,7 +41,10 @@ partner receives authority to spend or inflate another merchant's balance.
 - Strict Clippy, Rust formatting, TypeScript build, and zero-vulnerability
   production npm audit.
 - Clean-room public CI:
-  <https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29971763713>
+  <https://github.com/spoconymacius3879254-ctrl/coalition-passport/actions/runs/29972255775>
+- The CI SBF job rebuilds the program, runs the complete real-bytecode LiteSVM
+  flow, verifies the versioned IDL and exact SHA-256 digest, and publishes the
+  SBF/IDL bundle as a downloadable artifact.
 - Trusted Clock-derived cap epochs, monotonic receipt nonces, checked pre-write
   arithmetic, typed errors, canonical Token-2022 ATA constraints, and
   redemption that remains available during pause.
