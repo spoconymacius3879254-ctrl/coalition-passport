@@ -51,10 +51,17 @@ partner receives authority to spend or inflate another merchant's balance.
 
 ## Public demo
 
-The versioned Anchor IDL and compiled CLI are in `clients/passport-cli`. The CLI
-supports wallet-free PDA derivation, combined tier/status inspection, offline
-instruction review, and explicitly signed Devnet execution. It has no default
-wallet and refuses to send if the RPC genesis hash is not Solana Devnet.
+The browser demo is a zero-install, wallet-free walkthrough of receipt accrual,
+portable tier progression, and issuer-isolated redemption. Its read-only
+Devnet inspector derives the same public PDAs as the CLI and queries the
+canonical RPC without requesting signing permission. The production URL will
+be inserted after deployment.
+
+The versioned Anchor IDL and compiled CLI remain in `clients/passport-cli`.
+The CLI supports wallet-free PDA derivation, combined tier/status inspection,
+offline instruction review, and explicitly signed Devnet execution. It has no
+default wallet and refuses to send if the RPC genesis hash is not Solana
+Devnet.
 
 ## Devnet links
 

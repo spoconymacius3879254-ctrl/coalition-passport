@@ -1,0 +1,740 @@
+:root {
+  --ink: #18201d;
+  --paper: #f3f0e8;
+  --paper-deep: #e7e1d4;
+  --acid: #d8ff57;
+  --orange: #f46c3b;
+  --muted: #65706a;
+  --line: rgba(24, 32, 29, 0.18);
+  --dark: #15201c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(rgba(24, 32, 29, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 32, 29, 0.025) 1px, transparent 1px),
+    var(--paper);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+nav {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1440px;
+  padding: 18px 5vw;
+}
+
+nav > div {
+  align-items: center;
+  display: flex;
+  gap: 26px;
+}
+
+nav a {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wordmark {
+  align-items: center;
+  display: flex;
+  gap: 11px;
+  letter-spacing: -0.02em;
+}
+
+.wordmark span {
+  align-items: center;
+  background: var(--ink);
+  border-radius: 50%;
+  color: var(--acid);
+  display: inline-flex;
+  font-size: 11px;
+  height: 34px;
+  justify-content: center;
+  letter-spacing: -0.06em;
+  width: 34px;
+}
+
+.repo-link {
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 10px 16px;
+}
+
+.hero {
+  margin: 0 auto;
+  max-width: 1440px;
+  min-height: 760px;
+  padding: 105px 5vw 90px;
+  position: relative;
+}
+
+.eyebrow,
+.section-number {
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.eyebrow::before {
+  background: var(--orange);
+  border-radius: 50%;
+  content: "";
+  display: inline-block;
+  height: 9px;
+  margin-right: 10px;
+  width: 9px;
+}
+
+h1 {
+  font-size: clamp(64px, 8.3vw, 132px);
+  letter-spacing: -0.075em;
+  line-height: 0.82;
+  margin: 34px 0 42px;
+  max-width: 1100px;
+}
+
+.lede {
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.35;
+  margin: 0;
+  max-width: 690px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.primary,
+.secondary {
+  align-items: center;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 23px;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.primary {
+  background: var(--ink);
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.primary:hover,
+.secondary:hover,
+.repo-link:hover {
+  transform: translateY(-2px);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+
+.passport-card {
+  background: var(--acid);
+  border: 1px solid var(--ink);
+  border-radius: 22px;
+  bottom: 82px;
+  box-shadow: 14px 16px 0 var(--ink);
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 1fr 1fr;
+  padding: 24px;
+  position: absolute;
+  right: 6vw;
+  transform: rotate(-4deg);
+  width: min(390px, 34vw);
+}
+
+.passport-card small,
+.passport-card strong {
+  display: block;
+}
+
+.passport-card small {
+  font: 10px "Courier New", monospace;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+.passport-card strong {
+  font-size: 13px;
+}
+
+.passport-topline {
+  display: flex;
+  font: 9px "Courier New", monospace;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  letter-spacing: 0.06em;
+}
+
+.passport-mark {
+  align-items: flex-end;
+  display: flex;
+  gap: 5px;
+  grid-column: 1 / -1;
+  height: 105px;
+}
+
+.passport-mark i {
+  background: var(--ink);
+  border-radius: 999px;
+  display: block;
+  transform: rotate(34deg);
+  width: 42px;
+}
+
+.passport-mark i:nth-child(1) {
+  height: 70px;
+}
+
+.passport-mark i:nth-child(2) {
+  height: 105px;
+}
+
+.passport-mark i:nth-child(3) {
+  height: 52px;
+}
+
+.principle,
+.journey,
+.devnet {
+  margin: 0 auto;
+  max-width: 1440px;
+  padding: 100px 5vw;
+}
+
+.principle {
+  align-items: end;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 8vw;
+  grid-template-columns: 1.2fr 1fr;
+}
+
+h2 {
+  font-size: clamp(42px, 5vw, 78px);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  margin: 20px 0 0;
+}
+
+.principle > p {
+  font-size: 22px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.journey {
+  background: var(--dark);
+  color: white;
+  max-width: none;
+}
+
+.section-heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto 55px;
+  max-width: 1296px;
+}
+
+.section-heading > p {
+  color: #aab6b0;
+  font: 12px "Courier New", monospace;
+  letter-spacing: 0.06em;
+}
+
+.lab-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 0.95fr 1.05fr;
+  margin: auto;
+  max-width: 1296px;
+}
+
+.controls,
+.passport-state {
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 20px;
+  padding: clamp(22px, 3vw, 40px);
+}
+
+.controls label {
+  color: #b9c1bd;
+  display: block;
+  font: 11px "Courier New", monospace;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.merchant-picker {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 32px;
+}
+
+.merchant-picker button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 17px 18px;
+  text-align: left;
+}
+
+.merchant-picker button::before {
+  background: var(--merchant);
+  border-radius: 50%;
+  content: "";
+  height: 10px;
+  margin-right: 12px;
+  width: 10px;
+}
+
+.merchant-picker button span {
+  flex: 1;
+  font-weight: 800;
+}
+
+.merchant-picker button small {
+  color: #aeb9b3;
+}
+
+.merchant-picker button.selected {
+  background: rgba(216, 255, 87, 0.08);
+  border-color: var(--acid);
+}
+
+.amount-row {
+  display: flex;
+  gap: 10px;
+}
+
+.amount-row input {
+  background: #0f1714;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  color: white;
+  min-width: 0;
+  padding: 0 20px;
+  width: 45%;
+}
+
+.amount-row .primary {
+  background: var(--acid);
+  border-color: var(--acid);
+  color: var(--ink);
+  flex: 1;
+}
+
+.event-log {
+  background: #0e1512;
+  border-left: 3px solid var(--orange);
+  display: block;
+  font: 13px/1.5 "Courier New", monospace;
+  margin-top: 28px;
+  min-height: 88px;
+  padding: 15px 18px;
+}
+
+.event-log span {
+  color: #87928c;
+  display: block;
+  font-size: 10px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.passport-state {
+  background: #f6f1e6;
+  color: var(--ink);
+}
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.tier-row span,
+.chain-grid span {
+  color: var(--muted);
+  display: block;
+  font: 10px "Courier New", monospace;
+  letter-spacing: 0.06em;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+.tier-row strong {
+  font-size: clamp(24px, 3vw, 44px);
+  letter-spacing: -0.05em;
+}
+
+.progress-track {
+  background: #d8d4c9;
+  border-radius: 999px;
+  height: 7px;
+  margin-top: 35px;
+  overflow: hidden;
+}
+
+.progress-track i {
+  background: var(--orange);
+  display: block;
+  height: 100%;
+  transition: width 300ms ease;
+}
+
+.next-tier {
+  color: var(--muted);
+  font: 11px "Courier New", monospace;
+  margin: 9px 0 28px;
+  text-align: right;
+}
+
+.balances {
+  display: grid;
+  gap: 9px;
+}
+
+.balances article {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  display: grid;
+  gap: 13px;
+  grid-template-columns: auto 1fr auto;
+  padding: 15px;
+}
+
+.balances article > i {
+  border-radius: 50%;
+  height: 13px;
+  width: 13px;
+}
+
+.balances span,
+.balances strong {
+  display: block;
+}
+
+.balances span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.balances button {
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 9px 12px;
+}
+
+.balances button:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.boundary {
+  background: var(--acid);
+  display: grid;
+  gap: 4vw;
+  grid-template-columns: 1fr auto 1fr;
+  padding: 85px max(5vw, calc((100vw - 1296px) / 2));
+}
+
+.boundary span {
+  font: 11px "Courier New", monospace;
+  letter-spacing: 0.1em;
+}
+
+.boundary h3 {
+  font-size: clamp(35px, 4vw, 66px);
+  letter-spacing: -0.06em;
+  margin: 16px 0;
+}
+
+.boundary p {
+  font-size: 17px;
+  line-height: 1.5;
+  max-width: 480px;
+}
+
+.boundary-lock {
+  align-self: center;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  font-size: 36px;
+  font-weight: 900;
+  height: 70px;
+  place-items: center;
+  width: 70px;
+}
+
+.devnet-intro {
+  font-size: 20px;
+  line-height: 1.5;
+  max-width: 740px;
+}
+
+.chain-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 42px;
+}
+
+.chain-grid article {
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  min-height: 155px;
+  padding: 22px;
+}
+
+.chain-grid strong,
+.chain-grid a,
+.chain-grid code {
+  display: block;
+}
+
+.chain-grid strong {
+  font-size: 20px;
+  margin-bottom: 22px;
+}
+
+.chain-grid a,
+.chain-grid code {
+  font: 11px/1.4 "Courier New", monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chain-grid a {
+  text-decoration: underline;
+}
+
+.checked-at,
+.error {
+  font: 12px "Courier New", monospace;
+  margin-top: 20px;
+}
+
+.error {
+  color: #a73021;
+}
+
+footer {
+  align-items: end;
+  background: var(--ink);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 60px max(5vw, calc((100vw - 1296px) / 2));
+}
+
+footer strong {
+  font-size: 22px;
+}
+
+footer p {
+  color: #aeb8b3;
+  margin: 8px 0 0;
+}
+
+footer > div:last-child {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  nav > div a:not(.repo-link) {
+    display: none;
+  }
+
+  .hero {
+    min-height: 900px;
+  }
+
+  .passport-card {
+    bottom: 90px;
+    left: 8vw;
+    right: auto;
+    width: min(390px, 75vw);
+  }
+
+  .principle,
+  .lab-grid,
+  .boundary {
+    grid-template-columns: 1fr;
+  }
+
+  .boundary-lock {
+    transform: rotate(90deg);
+  }
+
+  .chain-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  nav {
+    padding: 14px 20px;
+  }
+
+  .hero,
+  .principle,
+  .journey,
+  .devnet {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero {
+    min-height: 790px;
+    padding-top: 70px;
+  }
+
+  h1 {
+    font-size: 58px;
+  }
+
+  .passport-card {
+    bottom: 65px;
+    left: 24px;
+    width: calc(100vw - 70px);
+  }
+
+  .principle {
+    gap: 30px;
+  }
+
+  .principle > p {
+    font-size: 18px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .amount-row {
+    flex-direction: column;
+  }
+
+  .amount-row input {
+    min-height: 48px;
+    width: 100%;
+  }
+
+  .tier-row {
+    gap: 18px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tier-row > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .balances article {
+    grid-template-columns: auto 1fr;
+  }
+
+  .balances button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .boundary {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .chain-grid {
+    grid-template-columns: 1fr;
+  }
+
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 30px;
+    padding: 45px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    transition: none !important;
+  }
+}

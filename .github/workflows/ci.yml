@@ -33,7 +33,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: clients/passport-cli/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            clients/passport-cli/package-lock.json
+      - name: Browser demo install, test, build, and production audit
+        run: |
+          npm ci
+          npm run test:web
+          npm run build
+          npm audit --omit=dev
       - name: CLI install, build, test, and production audit
         working-directory: clients/passport-cli
         run: |

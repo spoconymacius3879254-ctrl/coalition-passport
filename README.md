@@ -119,6 +119,30 @@ npm run cli -- build record-receipt \
 See [`clients/passport-cli/README.md`](clients/passport-cli/README.md) for send
 mode and the complete command surface.
 
+## Wallet-free browser demo
+
+The public browser client gives non-crypto users and judges a zero-install path
+through the architecture:
+
+- simulate merchant-authenticated receipts using the same basis-point, cap,
+  streak, tier, and issuer-local redemption rules as the Rust core;
+- see portable reputation change independently from three isolated merchant
+  balances; and
+- run a read-only Devnet check that derives the canonical Coalition, Merchant,
+  Passport, and MerchantBalance PDAs and queries the program/deployer accounts.
+
+The browser never connects a wallet, reads a keypair, or creates a transaction.
+Its model tests include the Rust demo fixture and its PDA test matches the
+independently tested Anchor CLI. The production site URL will be added here
+after its first deployment.
+
+```sh
+npm ci
+npm run test:web
+npm run build
+npm audit --omit=dev
+```
+
 ## Verification
 
 ```sh
@@ -141,8 +165,10 @@ Current evidence:
 - 7 CLI tests cover validation, readable account/tier decoding, privacy
   commitments, PDA isolation, and offline encoding of all seven on-chain
   instruction builders;
+- 4 browser tests cover the Rust fixture, merchant-liability isolation, daily
+  caps, tier progression, and PDA parity with the CLI;
 - strict Clippy, formatting, Anchor SBF build, TypeScript build, and production
-  dependency audit pass; and
+  dependency audits for both clients pass; and
 - `target/deploy/coalition_passport.so` is 313,064 bytes, SHA-256
   `59988c56c38586425af52d4b78c0914b7d3f2e0f0a48d3fdb4b6524554d4fb6f`.
 

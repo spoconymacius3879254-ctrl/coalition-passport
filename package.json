@@ -1,0 +1,30 @@
+{
+  "name": "coalition-passport-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test:web": "vitest run",
+    "check:web": "npm run test:web && npm run build",
+    "audit:web": "npm audit --omit=dev"
+  },
+  "dependencies": {
+    "@solana/kit": "7.0.0",
+    "next": "16.2.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  },
+  "overrides": {
+    "postcss": "8.5.22",
+    "sharp": "0.35.3"
+  }
+}

@@ -1,4 +1,7 @@
 target/
+.next/
+node_modules/
+coverage/
 .anchor/
 test-ledger/
 evidence/runtime/
