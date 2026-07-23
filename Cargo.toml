@@ -1,0 +1,21 @@
+[workspace]
+members = ["crates/loyalty-core", "programs/coalition_passport"]
+resolver = "2"
+
+[workspace.package]
+# Anchor CLI 1.0.2's manifest reader supports Rust editions through 2021.
+edition = "2021"
+license = "MIT"
+version = "0.1.0"
+
+[profile.release]
+# Required by Anchor 1.0.2 and keeps release arithmetic traps enabled.
+overflow-checks = true
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"

@@ -1,0 +1,11 @@
+{
+  "customer": "demo-customer",
+  "merchant": "cafe-orbit",
+  "earn_bps": 1000,
+  "daily_cap": 500,
+  "max_receipt_units": 50,
+  "thresholds": [10, 30, 100],
+  "amount_units": 120,
+  "expected_credit": 12,
+  "expected_remaining_after_redeem": 2
+}

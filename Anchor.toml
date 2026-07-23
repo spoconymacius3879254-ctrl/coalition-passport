@@ -1,0 +1,23 @@
+[toolchain]
+anchor_version = "1.0.2"
+solana_version = "3.1.10"
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+coalition_passport = "2A2227YnW1PEr6FrMLxZrjm8B3P3fHWQjjqM8tDNhxg6"
+
+[programs.devnet]
+coalition_passport = "2A2227YnW1PEr6FrMLxZrjm8B3P3fHWQjjqM8tDNhxg6"
+
+[provider]
+cluster = "devnet"
+# Explicitly authorized, throwaway Devnet-only signer. The entire .anchor
+# directory is gitignored; this path must never be committed or used on mainnet.
+wallet = "./.anchor/devnet-deployer.json"
+
+[scripts]
+test = "cargo test -p coalition-passport --test litesvm_passport"
