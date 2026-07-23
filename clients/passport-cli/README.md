@@ -1,8 +1,10 @@
 # Passport CLI
 
-This is the testable command-line client for the generated
-`target/idl/coalition_passport.json`. It supports offline instruction building,
-read-only account inspection, and explicitly selected Devnet submission.
+This is the testable command-line client for the versioned generated IDL at
+`idl/coalition_passport.json`. It supports offline instruction building,
+read-only account inspection, and explicitly selected Devnet submission. The
+checked-in IDL is the public integration interface and must be refreshed from
+`target/idl/coalition_passport.json` whenever the program interface changes.
 
 Every `build` command constructs and prints one unsigned instruction without
 contacting RPC or reading a key file. A `send` command instead requires an

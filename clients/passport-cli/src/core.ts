@@ -23,7 +23,7 @@ const moduleDirectory = dirname(fileURLToPath(import.meta.url));
 const packageDirectory = basename(dirname(moduleDirectory)) === "dist"
   ? resolve(moduleDirectory, "../..")
   : resolve(moduleDirectory, "..");
-export const DEFAULT_IDL_PATH = resolve(packageDirectory, "../../target/idl/coalition_passport.json");
+export const DEFAULT_IDL_PATH = resolve(packageDirectory, "idl/coalition_passport.json");
 
 export type Addresses = {
   coalition: PublicKey;

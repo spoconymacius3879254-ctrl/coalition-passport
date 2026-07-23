@@ -1,0 +1,1346 @@
+{
+  "address": "2A2227YnW1PEr6FrMLxZrjm8B3P3fHWQjjqM8tDNhxg6",
+  "metadata": {
+    "name": "coalition_passport",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Coalition loyalty program with a non-transferable Token-2022 Passport"
+  },
+  "instructions": [
+    {
+      "name": "create_passport",
+      "docs": [
+        "Creates the customer's unique Passport PDA and a one-of-one",
+        "non-transferable Token-2022 credential. The mint authority is revoked",
+        "after the single token is minted, permanently bounding supply at one."
+      ],
+      "discriminator": [
+        107,
+        136,
+        98,
+        163,
+        167,
+        217,
+        174,
+        84
+      ],
+      "accounts": [
+        {
+          "name": "customer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "coalition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition.authority",
+                "account": "Coalition"
+              }
+            ]
+          }
+        },
+        {
+          "name": "passport",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "customer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "passport_mint",
+          "docs": [
+            "The customer supplies a fresh mint signer. The unique Passport PDA",
+            "prevents a second mint for the same coalition/customer pair."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "passport_token",
+          "docs": [
+            "the associated-token program initializes and validates its contents."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_coalition",
+      "docs": [
+        "Creates a coalition configuration PDA governed by `authority`."
+      ],
+      "discriminator": [
+        23,
+        7,
+        135,
+        238,
+        145,
+        87,
+        186,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "coalition",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "max_receipt_units",
+          "type": "u64"
+        },
+        {
+          "name": "tier_thresholds",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pause_coalition",
+      "docs": [
+        "Halts coalition operations that opt into the coalition pause guard.",
+        "Only the authority embedded in the coalition PDA may make this state",
+        "transition."
+      ],
+      "discriminator": [
+        51,
+        87,
+        216,
+        84,
+        124,
+        27,
+        41,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "coalition"
+          ]
+        },
+        {
+          "name": "coalition",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "record_receipt",
+      "docs": [
+        "Records one merchant-authenticated receipt into the customer's",
+        "merchant-isolated balance. The trusted Clock sysvar supplies the daily",
+        "cap epoch; callers cannot reset caps by choosing an epoch value."
+      ],
+      "discriminator": [
+        123,
+        1,
+        227,
+        189,
+        86,
+        215,
+        19,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "merchant_authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "coalition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition.authority",
+                "account": "Coalition"
+              }
+            ]
+          },
+          "relations": [
+            "merchant",
+            "passport"
+          ]
+        },
+        {
+          "name": "merchant",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "passport",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "passport.customer",
+                "account": "Passport"
+              }
+            ]
+          }
+        },
+        {
+          "name": "balance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  108,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "passport"
+              },
+              {
+                "kind": "account",
+                "path": "merchant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "amount_units",
+          "type": "u64"
+        },
+        {
+          "name": "receipt_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "redeem",
+      "docs": [
+        "Redeems only the signing customer's credits for one explicit merchant.",
+        "Coalition pause intentionally does not block redemption of existing",
+        "credit, preventing an administrator from trapping customer balances."
+      ],
+      "discriminator": [
+        184,
+        12,
+        86,
+        149,
+        70,
+        196,
+        97,
+        225
+      ],
+      "accounts": [
+        {
+          "name": "customer",
+          "signer": true,
+          "relations": [
+            "passport"
+          ]
+        },
+        {
+          "name": "coalition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition.authority",
+                "account": "Coalition"
+              }
+            ]
+          },
+          "relations": [
+            "passport",
+            "merchant"
+          ]
+        },
+        {
+          "name": "passport",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "customer"
+              }
+            ]
+          },
+          "relations": [
+            "balance"
+          ]
+        },
+        {
+          "name": "merchant",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "merchant.authority",
+                "account": "Merchant"
+              }
+            ]
+          },
+          "relations": [
+            "balance"
+          ]
+        },
+        {
+          "name": "balance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  108,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "passport"
+              },
+              {
+                "kind": "account",
+                "path": "merchant"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "units",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "register_merchant",
+      "docs": [
+        "Registers a merchant PDA after both coalition administrator and the",
+        "merchant authority sign. Registration is blocked while paused."
+      ],
+      "discriminator": [
+        238,
+        245,
+        77,
+        132,
+        161,
+        88,
+        216,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "coalition"
+          ]
+        },
+        {
+          "name": "coalition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_authority",
+          "docs": [
+            "The merchant has to consent to controlling the registered merchant PDA."
+          ],
+          "signer": true
+        },
+        {
+          "name": "merchant",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coalition"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "earn_bps",
+          "type": "u16"
+        },
+        {
+          "name": "daily_cap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "unpause_coalition",
+      "docs": [
+        "Resumes coalition operations after an authority-controlled pause.",
+        "This intentionally uses the same PDA and authority checks as pause."
+      ],
+      "discriminator": [
+        60,
+        196,
+        47,
+        29,
+        79,
+        210,
+        141,
+        222
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "coalition"
+          ]
+        },
+        {
+          "name": "coalition",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  97,
+                  108,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Coalition",
+      "discriminator": [
+        150,
+        227,
+        169,
+        37,
+        12,
+        172,
+        126,
+        23
+      ]
+    },
+    {
+      "name": "Merchant",
+      "discriminator": [
+        71,
+        235,
+        30,
+        40,
+        231,
+        21,
+        32,
+        64
+      ]
+    },
+    {
+      "name": "MerchantBalance",
+      "discriminator": [
+        76,
+        119,
+        203,
+        184,
+        2,
+        128,
+        87,
+        17
+      ]
+    },
+    {
+      "name": "Passport",
+      "discriminator": [
+        18,
+        61,
+        245,
+        239,
+        6,
+        15,
+        18,
+        34
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "CoalitionInitialized",
+      "discriminator": [
+        201,
+        92,
+        196,
+        147,
+        145,
+        81,
+        65,
+        252
+      ]
+    },
+    {
+      "name": "CoalitionPauseChanged",
+      "discriminator": [
+        136,
+        145,
+        16,
+        160,
+        222,
+        223,
+        234,
+        8
+      ]
+    },
+    {
+      "name": "MerchantRegistered",
+      "discriminator": [
+        202,
+        61,
+        140,
+        95,
+        139,
+        239,
+        17,
+        83
+      ]
+    },
+    {
+      "name": "PassportCreated",
+      "discriminator": [
+        141,
+        164,
+        208,
+        246,
+        206,
+        99,
+        181,
+        228
+      ]
+    },
+    {
+      "name": "ReceiptRecorded",
+      "discriminator": [
+        254,
+        226,
+        37,
+        71,
+        33,
+        0,
+        78,
+        15
+      ]
+    },
+    {
+      "name": "Redeemed",
+      "discriminator": [
+        14,
+        29,
+        183,
+        71,
+        31,
+        165,
+        107,
+        38
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnauthorizedAuthority",
+      "msg": "the coalition authority did not sign"
+    },
+    {
+      "code": 6001,
+      "name": "CoalitionPaused",
+      "msg": "the coalition is paused"
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyPaused",
+      "msg": "the coalition is already paused"
+    },
+    {
+      "code": 6003,
+      "name": "AlreadyUnpaused",
+      "msg": "the coalition is already unpaused"
+    },
+    {
+      "code": 6004,
+      "name": "ZeroMaxReceiptUnits",
+      "msg": "maximum receipt units must be greater than zero"
+    },
+    {
+      "code": 6005,
+      "name": "EmptyTierSchedule",
+      "msg": "at least one tier threshold is required"
+    },
+    {
+      "code": 6006,
+      "name": "TooManyTiers",
+      "msg": "tier threshold count exceeds the fixed account capacity"
+    },
+    {
+      "code": 6007,
+      "name": "ZeroTierThreshold",
+      "msg": "tier thresholds must be greater than zero"
+    },
+    {
+      "code": 6008,
+      "name": "NonIncreasingTierSchedule",
+      "msg": "tier thresholds must be strictly increasing"
+    },
+    {
+      "code": 6009,
+      "name": "ZeroEarnBps",
+      "msg": "merchant earn basis points must be greater than zero"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidEarnBps",
+      "msg": "merchant earn basis points exceed 100 percent"
+    },
+    {
+      "code": 6011,
+      "name": "ZeroDailyCap",
+      "msg": "merchant daily cap must be greater than zero"
+    },
+    {
+      "code": 6012,
+      "name": "MintSizeOverflow",
+      "msg": "the passport mint account size cannot be represented safely"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidPassportTokenAccount",
+      "msg": "the supplied passport token account is not the canonical Token-2022 ATA"
+    },
+    {
+      "code": 6014,
+      "name": "UnauthorizedMerchant",
+      "msg": "the merchant authority did not authorize this merchant PDA"
+    },
+    {
+      "code": 6015,
+      "name": "UnauthorizedCustomer",
+      "msg": "the customer did not authorize this Passport"
+    },
+    {
+      "code": 6016,
+      "name": "AccountRelationshipMismatch",
+      "msg": "the supplied accounts do not belong to the same coalition relationship"
+    },
+    {
+      "code": 6017,
+      "name": "MerchantInactive",
+      "msg": "the merchant is inactive"
+    },
+    {
+      "code": 6018,
+      "name": "EmptyReceiptHash",
+      "msg": "receipt hash must be a nonzero opaque commitment"
+    },
+    {
+      "code": 6019,
+      "name": "ZeroReceipt",
+      "msg": "receipt amount must be greater than zero"
+    },
+    {
+      "code": 6020,
+      "name": "ZeroCredit",
+      "msg": "receipt amount earns zero credit at this merchant rate"
+    },
+    {
+      "code": 6021,
+      "name": "NonceNotMonotonic",
+      "msg": "receipt nonce must strictly increase for this merchant balance"
+    },
+    {
+      "code": 6022,
+      "name": "DailyCapExhausted",
+      "msg": "the merchant daily earning cap is exhausted"
+    },
+    {
+      "code": 6023,
+      "name": "ArithmeticOverflow",
+      "msg": "loyalty arithmetic overflowed"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidClock",
+      "msg": "validator clock cannot be converted into a nonnegative day epoch"
+    },
+    {
+      "code": 6025,
+      "name": "ClockMovedBackwards",
+      "msg": "validator day epoch moved backwards for this balance"
+    },
+    {
+      "code": 6026,
+      "name": "UnsupportedStateVersion",
+      "msg": "account uses an unsupported state version"
+    },
+    {
+      "code": 6027,
+      "name": "CorruptBalance",
+      "msg": "merchant balance invariants are corrupt"
+    },
+    {
+      "code": 6028,
+      "name": "ZeroRedemption",
+      "msg": "redemption units must be greater than zero"
+    },
+    {
+      "code": 6029,
+      "name": "InsufficientMerchantCredit",
+      "msg": "redemption exceeds this merchant's available customer credit"
+    }
+  ],
+  "types": [
+    {
+      "name": "Coalition",
+      "docs": [
+        "Coalition PDA state. Tier thresholds are fixed-width to make account size",
+        "deterministic and to reject oversized initialization instructions."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "max_receipt_units",
+            "type": "u64"
+          },
+          {
+            "name": "tier_count",
+            "type": "u8"
+          },
+          {
+            "name": "tier_thresholds",
+            "type": {
+              "array": [
+                "u64",
+                16
+              ]
+            }
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CoalitionInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "max_receipt_units",
+            "type": "u64"
+          },
+          {
+            "name": "tier_count",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CoalitionPauseChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Merchant",
+      "docs": [
+        "Merchant PDA state. Credits will remain merchant-local in a later stage."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "earn_bps",
+            "type": "u16"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantBalance",
+      "docs": [
+        "One customer's credit ledger for exactly one merchant. PDA seeds bind the",
+        "account to both sides, so a merchant signer cannot redirect an accrual into",
+        "another merchant's liability bucket."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "passport",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "earned_units",
+            "type": "u64"
+          },
+          {
+            "name": "redeemed_units",
+            "type": "u64"
+          },
+          {
+            "name": "earned_this_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "cap_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "last_receipt_nonce",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "earn_bps",
+            "type": "u16"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Passport",
+      "docs": [
+        "Customer-owned coalition reputation. Spendable credits are deliberately",
+        "kept out of this account and will live in merchant-isolated balance PDAs."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "customer",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_visits",
+            "type": "u64"
+          },
+          {
+            "name": "streak_points",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PassportCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport",
+            "type": "pubkey"
+          },
+          {
+            "name": "customer",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport_token",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReceiptRecorded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "epoch",
+            "type": "u64"
+          },
+          {
+            "name": "credit_units",
+            "type": "u64"
+          },
+          {
+            "name": "streak_delta",
+            "type": "u64"
+          },
+          {
+            "name": "tier_level",
+            "type": "u8"
+          },
+          {
+            "name": "receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Redeemed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coalition",
+            "type": "pubkey"
+          },
+          {
+            "name": "passport",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "customer",
+            "type": "pubkey"
+          },
+          {
+            "name": "redeemed_units",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_units",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
